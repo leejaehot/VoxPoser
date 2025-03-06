@@ -3,7 +3,7 @@ import numpy as np
 import numpy as np
 import plotly.graph_objects as go
 import datetime
-from transforms3d.quaternions import mat2quat
+from transforms3d.quaternions import mat2quat # 쿼터니언(w,x,y,z)
 
 def set_lmp_objects(lmps, objects):
     if isinstance(lmps, dict):
@@ -150,26 +150,38 @@ class Observation(dict):
         self.obs_dict = state
 
 def pointat2quat(pointat):
+    # 주어진 목표방향벡터(pointat)(3차원 numpy배열)을 기준으로 회전 행렬을 생성하고, 이를 쿼터니언(w,x,y,z)으로 변환하는 함수.
+    # 
     """
     calculate quaternion from pointat vector
     """
+    # 입력벡터를 단위벡터로.
     up = np.array(pointat, dtype=np.float32)
     up = normalize_vector(up)
+
+    # 기준이 되는 임의의 벡터 설정 (x축 방향)
     rand_vec = np.array([1, 0, 0], dtype=np.float32)
     rand_vec = normalize_vector(rand_vec)
-    # make sure that the random vector is close to desired direction
+
+    # 임의 랜덤 벡터가 pointat 벡터와 너무 가까운 경우, 다른 벡터로 변경
     if np.abs(np.dot(rand_vec, up)) > 0.99:
         rand_vec = np.array([0, 1, 0], dtype=np.float32)
         rand_vec = normalize_vector(rand_vec)
+    
+    # left 벡터 계산(pointat과 수직)
     left = np.cross(up, rand_vec)
     left = normalize_vector(left)
-    forward = np.cross(left, up)
+
+    # 전방 벡터 계산 (pointat 과 left 벡터를 이용)
+    forward = np.cross(left, up) # left 와 up의 외적 계산 -> 정면 벡터 생성
     forward = normalize_vector(forward)
+
+    # 3x3 회전 행렬 생성
     rotmat = np.eye(3).astype(np.float32)
     rotmat[:3, 0] = forward
     rotmat[:3, 1] = left
     rotmat[:3, 2] = up
-    quat_wxyz = mat2quat(rotmat)
+    quat_wxyz = mat2quat(rotmat) # 쿼터니언으로 변환
     return quat_wxyz
 
 def visualize_points(point_cloud, point_colors=None, show=True):

@@ -1,0 +1,163 @@
+Executing instruction: screw open the wine bottle
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "planner" generated code
+## context: "objects = ['bottle', 'cap']"
+########################################
+objects = ['bottle', 'cap']
+# Query: screw open the wine bottle.
+composer("grasp the wine bottle cap")
+composer("turn counterclockwise by 180 degrees")
+composer("back to default pose")
+# done
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: grasp the wine bottle cap.
+movable = parse_query_obj('gripper')
+affordance_map = get_affordance_map('a point at the center of the wine bottle cap')
+gripper_map = get_gripper_map('open everywhere except 1cm around the wine bottle cap')
+execute(movable, affordance_map=affordance_map, gripper_map=gripper_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['bottle', 'cap']"
+########################################
+objects = ['bottle', 'cap']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_affordance_map" generated code
+########################################
+# Query: a point at the center of the wine bottle cap.
+affordance_map = get_empty_affordance_map()
+wine_bottle_cap = parse_query_obj('wine bottle cap')
+x, y, z = wine_bottle_cap.position
+affordance_map[x, y, z] = 1
+ret_val = affordance_map
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_gripper_map" generated code
+########################################
+# Query: open everywhere except 1cm around the wine bottle cap.
+gripper_map = get_empty_gripper_map()
+# open everywhere
+gripper_map[:, :, :] = 1
+# close when 1cm around the wine bottle cap
+wine_bottle_cap = parse_query_obj('wine bottle cap')
+set_voxel_by_radius(gripper_map, wine_bottle_cap.position, radius_cm=1, value=0)
+ret_val = gripper_map
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['bottle', 'cap']"
+########################################
+objects = ['bottle', 'cap']
+# Query: wine bottle cap.
+cap = detect('cap')
+ret_val = cap
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['bottle', 'cap']"
+########################################
+objects = ['bottle', 'cap']
+# Query: wine bottle cap.
+cap = detect('cap')
+ret_val = cap
+
+
+[planners.py | 0:59:58.59] start
+[planners.py | 0:59:58.226] start optimizing, start_pos: [52 49 71]
+[planners.py | 0:59:58.258] optimization finished; path length: 22
+[planners.py | 0:59:58.262] after postprocessing, path length: 22
+[planners.py | 0:59:58.264] last waypoint: [35.77391304 56.29181254 29.5622812 ]
+[interfaces.py | 0:59:58] planner time: 0.210s
+[interfaces.py | 0:59:58] overwriting gripper to less common value for the last waypoint
+** saving visualization to ./visualizations/0:59:58.html ...
+** saving visualization to ./visualizations/latest.html ...
+** save to ./visualizations/0:59:58.html
+[interfaces.py | 1:0:0] start executing path via controller (24 waypoints)
+[interfaces.py | 1:0:1] completed waypoint 1 (wp: [ 0.288 -0.     1.469], actual: [ 2.880e-01 -1.000e-03  1.469e+00], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.465)
+[interfaces.py | 1:0:1] completed waypoint 2 (wp: [0.256 0.025 1.449], actual: [0.257 0.024 1.449], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.431)
+[interfaces.py | 1:0:1] completed waypoint 3 (wp: [0.228 0.045 1.429], actual: [0.228 0.045 1.429], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.4)
+[interfaces.py | 1:0:2] completed waypoint 4 (wp: [0.203 0.061 1.409], actual: [0.204 0.061 1.408], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.372)
+[interfaces.py | 1:0:2] completed waypoint 5 (wp: [0.182 0.073 1.388], actual: [0.182 0.073 1.388], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.347)
+[interfaces.py | 1:0:2] completed waypoint 6 (wp: [0.164 0.082 1.368], actual: [0.164 0.082 1.368], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.323)
+[interfaces.py | 1:0:3] completed waypoint 7 (wp: [0.148 0.088 1.348], actual: [0.148 0.088 1.348], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.301)
+[interfaces.py | 1:0:3] completed waypoint 8 (wp: [0.135 0.092 1.328], actual: [0.136 0.092 1.328], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.279)
+[interfaces.py | 1:0:3] completed waypoint 9 (wp: [0.125 0.093 1.308], actual: [0.125 0.093 1.308], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.258)
+[interfaces.py | 1:0:3] completed waypoint 10 (wp: [0.117 0.093 1.287], actual: [0.117 0.093 1.287], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.237)
+[interfaces.py | 1:0:4] completed waypoint 11 (wp: [0.107 0.091 1.257], actual: [0.107 0.091 1.257], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.207)
+[interfaces.py | 1:0:4] completed waypoint 12 (wp: [0.103 0.089 1.236], actual: [0.104 0.089 1.237], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.186)
+[interfaces.py | 1:0:4] completed waypoint 13 (wp: [0.103 0.088 1.226], actual: [0.103 0.088 1.226], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.175)
+[interfaces.py | 1:0:4] completed waypoint 14 (wp: [0.103 0.087 1.206], actual: [0.103 0.087 1.206], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.156)
+[interfaces.py | 1:0:4] completed waypoint 15 (wp: [0.104 0.086 1.185], actual: [0.104 0.086 1.186], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.135)
+[interfaces.py | 1:0:5] completed waypoint 16 (wp: [0.105 0.084 1.165], actual: [0.105 0.084 1.166], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.115)
+[interfaces.py | 1:0:5] completed waypoint 17 (wp: [0.107 0.084 1.145], actual: [0.107 0.084 1.146], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.095)
+[interfaces.py | 1:0:5] completed waypoint 18 (wp: [0.108 0.083 1.126], actual: [0.108 0.083 1.126], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.076)
+[interfaces.py | 1:0:5] completed waypoint 19 (wp: [0.109 0.083 1.107], actual: [0.109 0.083 1.107], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.057)
+[interfaces.py | 1:0:6] completed waypoint 20 (wp: [0.109 0.084 1.088], actual: [0.109 0.084 1.088], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.038)
+[interfaces.py | 1:0:6] completed waypoint 21 (wp: [0.108 0.087 1.069], actual: [0.107 0.087 1.068], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.018)
+[interfaces.py | 1:0:6] skip waypoint 22 because it is moving in opposite direction of the final target
+[interfaces.py | 1:0:6] skip waypoint 23 because it is moving in opposite direction of the final target
+[interfaces.py | 1:0:6] completed waypoint 24 (wp: [0.104 0.09  1.051], actual: [0.105 0.09  1.053], target: [0.104 0.09  1.051], start: [ 0.288 -0.     1.469], dist2target: 0.003)
+[interfaces.py | 1:0:6] reached target; terminating 
+[interfaces.py | 1:0:6] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: turn counterclockwise by 180 degrees.
+movable = parse_query_obj('gripper')
+rotation_map = get_rotation_map('turn counterclockwise by 180 degrees')
+execute(movable, rotation_map=rotation_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['bottle', 'cap']"
+########################################
+objects = ['bottle', 'cap']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_rotation_map" generated code
+########################################
+# Query: turn counterclockwise by 180 degrees.
+rotation_map = get_empty_rotation_map()
+curr_rotation = rotation_map[0, 0, 0]
+rotation_delta = euler2quat(0, 0, -np.pi)
+rotation_map[:, :, :] = qmult(curr_rotation, rotation_delta)
+ret_val = rotation_map
+
+
+[interfaces.py | 1:0:6] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: back to default pose.
+reset_to_default_pose()
+
+

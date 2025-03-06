@@ -92,11 +92,11 @@ class LMP:
 
     def __call__(self, query, **kwargs):
         prompt, user_query = self.build_prompt(query)
-
+        # import pdb;pdb.set_trace()
         start_time = time.time()
         while True:
             try:
-                code_str = self._cached_api_call(
+                code_str = self._cached_api_call( # 생성한 코드
                     prompt=prompt,
                     stop=self._stop_tokens,
                     temperature=self._cfg['temperature'],
@@ -112,20 +112,20 @@ class LMP:
 
         if self._cfg['include_context']:
             assert self._context is not None, 'context is None'
-            to_exec = f'{self._context}\n{code_str}'
+            to_exec = f'{self._context}\n{code_str}' # 이게 사용자 쿼리에 대한, objects와 서브태스크로 분해한 composer코드
             to_log = f'{self._context}\n{user_query}\n{code_str}'
         else:
             to_exec = code_str
             to_log = f'{user_query}\n{to_exec}'
 
         to_log_pretty = highlight(to_log, PythonLexer(), TerminalFormatter())
-
+        #import pdb;pdb.set_trace()
         if self._cfg['include_context']:
             print('#'*40 + f'\n## "{self._name}" generated code\n' + f'## context: "{self._context}"\n' + '#'*40 + f'\n{to_log_pretty}\n')
         else:
             print('#'*40 + f'\n## "{self._name}" generated code\n' + '#'*40 + f'\n{to_log_pretty}\n')
 
-        gvars = merge_dicts([self._fixed_vars, self._variable_vars])
+        gvars = merge_dicts([self._fixed_vars, self._variable_vars]) # 고정변수, 가변변수
         lvars = kwargs
 
         # return function instead of executing it so we can replan using latest obs（do not do this for high-level UIs)
@@ -168,6 +168,7 @@ def merge_dicts(dicts):
     }
     
 
+# 코드가 안정되게 실행되게 하기 위해.
 def exec_safe(code_str, gvars=None, lvars=None):
     banned_phrases = ['import', '__']
     for phrase in banned_phrases:

@@ -1,0 +1,443 @@
+Executing instruction: take umbrella out of umbrella stand
+*** OpenAI API call took 4.56s ***
+########################################
+## "planner" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: take umbrella out of umbrella stand.
+composer("grasp the umbrella")
+composer("back to default pose")
+composer("move to 10cm on top of the stand")
+composer("open gripper")
+composer("back to default pose")
+# done
+
+
+*** OpenAI API call took 4.79s ***
+########################################
+## "composer" generated code
+########################################
+# Query: grasp the umbrella.
+movable = parse_query_obj('gripper')
+affordance_map = get_affordance_map('a point at the center of the umbrella handle')
+gripper_map = get_gripper_map('open everywhere except 1cm around the umbrella handle')
+execute(movable, affordance_map=affordance_map, gripper_map=gripper_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_affordance_map" generated code
+########################################
+# Query: a point at the center of the umbrella handle.
+affordance_map = get_empty_affordance_map()
+umbrella_handle = parse_query_obj('umbrella handle')
+x, y, z = umbrella_handle.position
+affordance_map[x, y, z] = 1
+ret_val = affordance_map
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_gripper_map" generated code
+########################################
+# Query: open everywhere except 1cm around the umbrella handle.
+gripper_map = get_empty_gripper_map()
+# open everywhere
+gripper_map[:, :, :] = 1
+# close when 1cm around the umbrella handle
+umbrella_handle = parse_query_obj('umbrella handle')
+set_voxel_by_radius(gripper_map, umbrella_handle.position, radius_cm=1, value=0)
+ret_val = gripper_map
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: umbrella handle.
+umbrella_handle = detect('umbrella')
+ret_val = umbrella_handle
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: umbrella handle.
+umbrella_handle = detect('umbrella')
+ret_val = umbrella_handle
+
+
+[planners.py | 1:15:5.881] start
+[planners.py | 1:15:6.27] start optimizing, start_pos: [35 40 20]
+[planners.py | 1:15:6.130] optimization finished; path length: 81
+[planners.py | 1:15:6.137] after postprocessing, path length: 6
+[planners.py | 1:15:6.139] last waypoint: [36. 39. 19.]
+[interfaces.py | 1:15:6] planner time: 0.264s
+[interfaces.py | 1:15:6] overwriting gripper to less common value for the last waypoint
+** saving visualization to ./visualizations/1:15:6.html ...
+** saving visualization to ./visualizations/latest.html ...
+** save to ./visualizations/1:15:6.html
+[interfaces.py | 1:15:8] start executing path via controller (8 waypoints)
+[interfaces.py | 1:15:9] completed waypoint 1 (wp: [ 0.102 -0.133  0.958], actual: [ 0.105 -0.132  0.955], target: [ 0.107 -0.139  0.944], start: [ 0.102 -0.133  0.958], dist2target: 0.013)
+[interfaces.py | 1:15:9] skip waypoint 2 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 3 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 4 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 5 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 6 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 7 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] completed waypoint 8 (wp: [ 0.107 -0.139  0.944], actual: [ 0.106 -0.137  0.954], target: [ 0.107 -0.139  0.944], start: [ 0.102 -0.133  0.958], dist2target: 0.011)
+[interfaces.py | 1:15:9] reached target; terminating 
+[interfaces.py | 1:15:9] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: back to default pose.
+reset_to_default_pose()
+
+
+*** OpenAI API call took 2.75s ***
+########################################
+## "composer" generated code
+########################################
+# Query: move to 10cm on top of the stand.
+movable = parse_query_obj('gripper')
+affordance_map = get_affordance_map('a point 10cm above the stand')
+execute(movable, affordance_map=affordance_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+*** OpenAI API call took 6.16s ***
+########################################
+## "get_affordance_map" generated code
+########################################
+# Query: a point 10cm above the stand.
+affordance_map = get_empty_affordance_map()
+stand = parse_query_obj('stand')
+(min_x, min_y, min_z), (max_x, max_y, max_z) = stand.aabb
+center_x, center_y, center_z = stand.position
+# 10cm above so we add to z-axis
+x = center_x
+y = center_y
+z = max_z + cm2index(10, 'z')
+affordance_map[x, y, z] = 1
+ret_val = affordance_map
+
+
+*** OpenAI API call took 1.10s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: stand.
+stand = detect('stand')
+ret_val = stand
+
+
+[planners.py | 1:15:20.471] start
+[planners.py | 1:15:20.619] start optimizing, start_pos: [41 42 33]
+[planners.py | 1:15:20.625] optimization finished; path length: 3
+[planners.py | 1:15:20.628] after postprocessing, path length: 3
+[planners.py | 1:15:20.630] last waypoint: [38. 41. 30.]
+[interfaces.py | 1:15:20] planner time: 0.164s
+** saving visualization to ./visualizations/1:15:20.html ...
+** saving visualization to ./visualizations/latest.html ...
+** save to ./visualizations/1:15:20.html
+[interfaces.py | 1:15:23] start executing path via controller (5 waypoints)
+[interfaces.py | 1:15:23] completed waypoint 1 (wp: [ 0.16  -0.099  1.085], actual: [ 0.156 -0.104  1.087], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.043)
+[interfaces.py | 1:15:23] completed waypoint 2 (wp: [ 0.139 -0.112  1.065], actual: [ 0.155 -0.104  1.086], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.042)
+[interfaces.py | 1:15:23] completed waypoint 3 (wp: [ 0.128 -0.112  1.055], actual: [ 0.154 -0.104  1.085], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.041)
+[interfaces.py | 1:15:23] completed waypoint 4 (wp: [ 0.128 -0.112  1.055], actual: [ 0.154 -0.104  1.085], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.041)
+[interfaces.py | 1:15:23] completed waypoint 5 (wp: [ 0.128 -0.112  1.055], actual: [ 0.154 -0.104  1.085], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.041)
+[interfaces.py | 1:15:23] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: open gripper.
+movable = parse_query_obj('gripper')
+gripper_map = get_gripper_map('open everywhere')
+execute(movable, gripper_map=gripper_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_gripper_map" generated code
+########################################
+# Query: open everywhere.
+gripper_map = get_empty_gripper_map()
+# open everywhere
+gripper_map[:, :, :] = 1
+ret_val = gripper_map
+
+
+[interfaces.py | 1:15:24] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: back to default pose.
+reset_to_default_pose()
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Executing instruction: take umbrella out of umbrella stand
+*** OpenAI API call took 4.56s ***
+########################################
+## "planner" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: take umbrella out of umbrella stand.
+composer("grasp the umbrella")
+composer("back to default pose")
+composer("move to 10cm on top of the stand")
+composer("open gripper")
+composer("back to default pose")
+# done
+
+
+*** OpenAI API call took 4.79s ***
+########################################
+## "composer" generated code
+########################################
+# Query: grasp the umbrella.
+movable = parse_query_obj('gripper')
+affordance_map = get_affordance_map('a point at the center of the umbrella handle')
+gripper_map = get_gripper_map('open everywhere except 1cm around the umbrella handle')
+execute(movable, affordance_map=affordance_map, gripper_map=gripper_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_affordance_map" generated code
+########################################
+# Query: a point at the center of the umbrella handle.
+affordance_map = get_empty_affordance_map()
+umbrella_handle = parse_query_obj('umbrella handle')
+x, y, z = umbrella_handle.position
+affordance_map[x, y, z] = 1
+ret_val = affordance_map
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_gripper_map" generated code
+########################################
+# Query: open everywhere except 1cm around the umbrella handle.
+gripper_map = get_empty_gripper_map()
+# open everywhere
+gripper_map[:, :, :] = 1
+# close when 1cm around the umbrella handle
+umbrella_handle = parse_query_obj('umbrella handle')
+set_voxel_by_radius(gripper_map, umbrella_handle.position, radius_cm=1, value=0)
+ret_val = gripper_map
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: umbrella handle.
+umbrella_handle = detect('umbrella')
+ret_val = umbrella_handle
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: umbrella handle.
+umbrella_handle = detect('umbrella')
+ret_val = umbrella_handle
+
+
+[planners.py | 1:15:5.881] start
+[planners.py | 1:15:6.27] start optimizing, start_pos: [35 40 20]
+[planners.py | 1:15:6.130] optimization finished; path length: 81
+[planners.py | 1:15:6.137] after postprocessing, path length: 6
+[planners.py | 1:15:6.139] last waypoint: [36. 39. 19.]
+[interfaces.py | 1:15:6] planner time: 0.264s
+[interfaces.py | 1:15:6] overwriting gripper to less common value for the last waypoint
+** saving visualization to ./visualizations/1:15:6.html ...
+** saving visualization to ./visualizations/latest.html ...
+** save to ./visualizations/1:15:6.html
+[interfaces.py | 1:15:8] start executing path via controller (8 waypoints)
+[interfaces.py | 1:15:9] completed waypoint 1 (wp: [ 0.102 -0.133  0.958], actual: [ 0.105 -0.132  0.955], target: [ 0.107 -0.139  0.944], start: [ 0.102 -0.133  0.958], dist2target: 0.013)
+[interfaces.py | 1:15:9] skip waypoint 2 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 3 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 4 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 5 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 6 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] skip waypoint 7 because it is moving in opposite direction of the final target
+[interfaces.py | 1:15:9] completed waypoint 8 (wp: [ 0.107 -0.139  0.944], actual: [ 0.106 -0.137  0.954], target: [ 0.107 -0.139  0.944], start: [ 0.102 -0.133  0.958], dist2target: 0.011)
+[interfaces.py | 1:15:9] reached target; terminating 
+[interfaces.py | 1:15:9] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: back to default pose.
+reset_to_default_pose()
+
+
+*** OpenAI API call took 2.75s ***
+########################################
+## "composer" generated code
+########################################
+# Query: move to 10cm on top of the stand.
+movable = parse_query_obj('gripper')
+affordance_map = get_affordance_map('a point 10cm above the stand')
+execute(movable, affordance_map=affordance_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+*** OpenAI API call took 6.16s ***
+########################################
+## "get_affordance_map" generated code
+########################################
+# Query: a point 10cm above the stand.
+affordance_map = get_empty_affordance_map()
+stand = parse_query_obj('stand')
+(min_x, min_y, min_z), (max_x, max_y, max_z) = stand.aabb
+center_x, center_y, center_z = stand.position
+# 10cm above so we add to z-axis
+x = center_x
+y = center_y
+z = max_z + cm2index(10, 'z')
+affordance_map[x, y, z] = 1
+ret_val = affordance_map
+
+
+*** OpenAI API call took 1.10s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: stand.
+stand = detect('stand')
+ret_val = stand
+
+
+[planners.py | 1:15:20.471] start
+[planners.py | 1:15:20.619] start optimizing, start_pos: [41 42 33]
+[planners.py | 1:15:20.625] optimization finished; path length: 3
+[planners.py | 1:15:20.628] after postprocessing, path length: 3
+[planners.py | 1:15:20.630] last waypoint: [38. 41. 30.]
+[interfaces.py | 1:15:20] planner time: 0.164s
+** saving visualization to ./visualizations/1:15:20.html ...
+** saving visualization to ./visualizations/latest.html ...
+** save to ./visualizations/1:15:20.html
+[interfaces.py | 1:15:23] start executing path via controller (5 waypoints)
+[interfaces.py | 1:15:23] completed waypoint 1 (wp: [ 0.16  -0.099  1.085], actual: [ 0.156 -0.104  1.087], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.043)
+[interfaces.py | 1:15:23] completed waypoint 2 (wp: [ 0.139 -0.112  1.065], actual: [ 0.155 -0.104  1.086], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.042)
+[interfaces.py | 1:15:23] completed waypoint 3 (wp: [ 0.128 -0.112  1.055], actual: [ 0.154 -0.104  1.085], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.041)
+[interfaces.py | 1:15:23] completed waypoint 4 (wp: [ 0.128 -0.112  1.055], actual: [ 0.154 -0.104  1.085], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.041)
+[interfaces.py | 1:15:23] completed waypoint 5 (wp: [ 0.128 -0.112  1.055], actual: [ 0.154 -0.104  1.085], target: [ 0.128 -0.112  1.055], start: [ 0.16  -0.099  1.085], dist2target: 0.041)
+[interfaces.py | 1:15:23] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: open gripper.
+movable = parse_query_obj('gripper')
+gripper_map = get_gripper_map('open everywhere')
+execute(movable, gripper_map=gripper_map)
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "parse_query_obj" generated code
+## context: "objects = ['umbrella', 'stand']"
+########################################
+objects = ['umbrella', 'stand']
+# Query: gripper.
+gripper = detect('gripper')
+ret_val = gripper
+
+
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "get_gripper_map" generated code
+########################################
+# Query: open everywhere.
+gripper_map = get_empty_gripper_map()
+# open everywhere
+gripper_map[:, :, :] = 1
+ret_val = gripper_map
+
+
+[interfaces.py | 1:15:24] finished executing path via controller
+(using cache) *** OpenAI API call took 0.00s ***
+########################################
+## "composer" generated code
+########################################
+# Query: back to default pose.
+reset_to_default_pose()
+
+
+log_file : log_CaP/tasks.TakeUmbrellaOutOfUmbrellaStand is stored.

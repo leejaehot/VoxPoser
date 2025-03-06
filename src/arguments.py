@@ -1,12 +1,15 @@
 """load YAML config file"""
+# YAML 형식의 config file을 로드하고, 딕셔너리처럼 동작하면서 속성방식으로도 접근할 수 있는 ConfigDict 클래스 제공 코드.
 import os
 import yaml
 
+# YAML 설정 파일 로드하는 함수
 def load_config(config_path):
     with open(config_path, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     return config
 
+# 환경 변수(env)(rlbench) 혹은 직접 지정한 경로(config_path)를 사용해 설정 파일을 로드하는 함수
 def get_config(env=None, config_path=None):
     assert env is None or config_path is None, 'env and config_path cannot be both specified'
     if config_path is None:
@@ -15,6 +18,7 @@ def get_config(env=None, config_path=None):
     assert config_path and os.path.exists(config_path), f'config file does not exist ({config_path})'
     config = load_config(config_path)
     # wrap dict such that we can access config through attribute
+    # 설정 딕셔너리를 재귀적으로 변환하는 클래스
     class ConfigDict(dict):
         def __init__(self, config):
             """recursively build config"""

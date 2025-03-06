@@ -1,35 +1,35 @@
 env_name: rlbench
 
 planner:
-  stop_threshold: 0.001
-  savgol_polyorder: 3
-  savgol_window_size: 20
-  obstacle_map_weight: 1
-  max_steps: 300
-  obstacle_map_gaussian_sigma: 10
-  target_map_weight: 2
-  stop_criteria: no_nearby_equal
-  target_spacing: 1
-  max_curvature: 3
-  pushing_skip_per_k: 5
+  stop_threshold: 0.001 # 경로 최적화 종료 조건. 오차 0.001 이하일때 멈춤.
+  savgol_polyorder: 3 # 경로 smoothing 위한 Savitzky-Golay 필터의 다항차수.
+  savgol_window_size: 20 # 위 필터의 윈도우 크기.
+  obstacle_map_weight: 1 # 장애물회피 시 장애물의 중요도 (높을수록 더 적극회피)
+  max_steps: 300 # 최대 플래닝 스텝
+  obstacle_map_gaussian_sigma: 10 # 장애물 지도에서 가우시안 스무딩 적용범위
+  target_map_weight: 2 # 목표 지점(Affordance map)의 중요도 (높을수록 목표지향적 경로생성.)
+  stop_criteria: no_nearby_equal # 특정 조건에서 경로 플래닝 중단하는 기준.
+  target_spacing: 1 # 목표 사이 간격 설정
+  max_curvature: 3 # 경로의 최대 곡률(높으면 부드러운 경로) 
+  pushing_skip_per_k: 5 # 푸시 동작을 수행할 때 몇 개의 스텝을 건너뛸지
 
 controller:
-  horizon_length: 1
-  num_samples: 10000
-  ee_local: temperature
-  ee_local_radius: 0.15
+  horizon_length: 1 # 예측 지평선 길이 (미래 상태를 얼마나 고려할지)
+  num_samples: 10000 # 경로 샘플링 개수 (더 많은 샘플링 시 정확도 증가)
+  ee_local: temperature # end effector 의 제어 방식
+  ee_local_radius: 0.15 # ee 주변에서 허용하는 이동반경(단위 m)
 
 visualizer:
   save_dir: ./visualizations
-  quality: low
-  map_size: 100
+  quality: high # low is original
+  map_size: 100 # 시각화할 지도 크기
 
 lmp_config:
   env:
-    map_size: 100
-    num_waypoints_per_plan: 10000  # set to a large number since we only do open loop for sim
-    max_plan_iter: 1
-    visualize: True
+    map_size: 100 # Voxel map 크기
+    num_waypoints_per_plan: 10000  # set to a large number since we only do open loop for sim # 경로당 최대 웨이포인트 개수.(큰 값으로해서 오픈 루프 플래닝 수행.)
+    max_plan_iter: 1 # 최대 경로 계획 반복 횟수
+    visualize: True # 시각화 활성화 여부
   lmps:
     planner:
       prompt_fname: planner_prompt
@@ -42,10 +42,10 @@ lmp_config:
         - '# Query: '
         - 'objects = '
       maintain_session: False
-      include_context: True
-      has_return: False
-      return_val_name: ret_val
-      load_cache: True
+      include_context: True # 이전 응답 기억
+      has_return: False # LLM이 실제 값을 반환하는 지 여부
+      return_val_name: ret_val # 반환 값의 변수 이름.
+      load_cache: True # 프롬프트 결과를 캐싱하여 중복 질의 방지
     composer:
       prompt_fname: composer_prompt
       model: gpt-4

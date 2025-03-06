@@ -12,9 +12,9 @@ class PathPlanner:
     Then apply several postprocessing steps to the path.
     (TODO: can be improved using more principled methods, including extension to whole-arm planning)
     """
-    def __init__(self, planner_config, map_size):
+    def __init__(self, planner_config, map_size): 
         self.config = planner_config
-        self.map_size = map_size
+        self.map_size = map_size # 100 100 100
 
     def optimize(self, start_pos: np.ndarray, target_map: np.ndarray, obstacle_map: np.ndarray, object_centric=False):
         """
@@ -29,6 +29,7 @@ class PathPlanner:
         """
         print(f'[planners.py | {get_clock_time(milliseconds=True)}] start')
         info = dict()
+
         # make copies
         start_pos, raw_start_pos = start_pos.copy(), start_pos
         target_map, raw_target_map = target_map.copy(), target_map
@@ -46,24 +47,26 @@ class PathPlanner:
         stop_criteria = self._get_stop_criteria()
         # initialize path
         path, current_pos = [start_pos], start_pos
+
+
         # optimize
         print(f'[planners.py | {get_clock_time(milliseconds=True)}] start optimizing, start_pos: {start_pos}')
         for i in range(self.config.max_steps):
-            # calculate all nearby voxels around current position
+            # 현재 위치에서 주변 voxel계산
             all_nearby_voxels = self._calculate_nearby_voxel(current_pos, object_centric=object_centric)
-            # calculate the score of all nearby voxels
+            # 주변 Voxel 중 비용이 가장 낮은 곳 선택
             nearby_score = _costmap[all_nearby_voxels[:, 0], all_nearby_voxels[:, 1], all_nearby_voxels[:, 2]]
-            # Find the minimum cost voxel
+            # Find the minimum cost voxel # 목표에 더 가까운 방향으로 이동.
             steepest_idx = np.argmin(nearby_score)
             next_pos = all_nearby_voxels[steepest_idx]
-            # increase cost at current position to avoid going back
+            # 현재 위치의 비용 증가 → 되돌아가는 경로 방지
             _costmap[current_pos[0].round().astype(int),
                      current_pos[1].round().astype(int),
                      current_pos[2].round().astype(int)] += 1
-            # update path and current position
+            # 경로 업데이트
             path.append(next_pos)
             current_pos = next_pos
-            # check stop criteria
+            # 종료 조건 확인
             if stop_criteria(current_pos, _costmap, self.config.stop_threshold):
                 break
         raw_path = np.array(path)
@@ -88,6 +91,7 @@ class PathPlanner:
     
     def _get_stop_criteria(self):
         def no_nearby_equal_criteria(current_pos, costmap, stop_threshold):
+            # 현재 위치 주변에 비용이 더 낮은 Voxel이 없으면 경로 탐색을 중단.
             """
             Do not stop if there is a nearby voxel with cost less than current cost + stop_threshold.
             """
@@ -96,12 +100,13 @@ class PathPlanner:
             current_cost = costmap[current_pos_discrete[0], current_pos_discrete[1], current_pos_discrete[2]]
             nearby_locs = self._calculate_nearby_voxel(current_pos, object_centric=False)
             nearby_equal = np.any(costmap[nearby_locs[:, 0], nearby_locs[:, 1], nearby_locs[:, 2]] < current_cost + stop_threshold)
-            if nearby_equal:
+            if nearby_equal: # 더 낮은 비용이 없으면 `True` 반환
                 return False
             return True
         return no_nearby_equal_criteria
 
     def _calculate_nearby_voxel(self, current_pos, object_centric=False):
+        # 현재 Voxel을 중심으로 탐색할 수 있는 주변 Voxel 좌표들을 반환.
         # create a grid of nearby voxels
         half_size = int(2 * self.map_size / 100)
         offsets = np.arange(-half_size, half_size + 1)
@@ -121,6 +126,8 @@ class PathPlanner:
         return all_nearby_voxels
     
     def _postprocess_path(self, path, raw_target_map, object_centric=False):
+        # Savitzky-Golay 필터로 경로 후처리하여 곡률 줄이고, 목표 지점까지의 경로를 부드럽게 만듦.
+        # 근데 곡률 너무 큰 경우엔 경로를 조기 종료하여 자연스러운 이동을 유도.
         """
         Apply various postprocessing steps to the path.
         """
